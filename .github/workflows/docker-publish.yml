@@ -10,6 +10,11 @@ env:
 
 jobs:
   build-and-push-image:
+    strategy:
+      matrix:
+        platform:
+        - linux/amd64
+        - linux/arm64
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -33,9 +38,10 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        uses: docker/build-push-action@v4
         with:
           context: .
+          platforms: ${{ matrix.platform }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
