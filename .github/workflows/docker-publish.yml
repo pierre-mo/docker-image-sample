@@ -81,7 +81,7 @@ jobs:
         with:
           context: .
           platforms: ${{ matrix.platform }}
-          build-args: BASE_IMAGE=summerwind/actions-runner:ubuntu-22.04
+          build-args: BASE_IMAGE=summerwind/actions-runner:ubuntu-22.04,USER=runner
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
