@@ -14,13 +14,13 @@ ARG SQLCMD_VERSION=1.2.0
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TARGETOS
 ARG TARGETARCH
-RUN [ "$EUID" -eq 0 ] && apt-get -y install sudo
-RUN sudo apt-get update && apt-get install -y git wget gzip bzip2 tar jq python3-pip
-RUN sudo pip install azure-cli==${AZURE_CLI_VERSION} poetry==${POETRY_VERSION} pre-commit==${PRE_COMMIT_VERSION}
-RUN wget -qO- https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip | zcat | sudo tee /usr/local/bin/terraform > /dev/null && sudo chmod +x /usr/local/bin/terraform
-RUN wget -qO- https://github.com/terraform-docs/terraform-docs/releases/download/v${TERRAFORM_DOCS_VERSION}/terraform-docs-v${TERRAFORM_DOCS_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | sudo tar -xz -C /usr/local/bin --exclude='*.md' --exclude 'LICENSE'
-RUN wget -qO- https://github.com/aquasecurity/tfsec/releases/download/v$TFSEC_VERSION/tfsec_${TFSEC_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | sudo tar -xz -C /usr/local/bin
-RUN wget -qO- https://github.com/terraform-linters/tflint/releases/download/v${TFLINT_VERSION}/tflint_${TARGETOS}_${TARGETARCH}.zip | zcat | sudo tee /usr/local/bin/tflint > /dev/null && sudo chmod +x /usr/local/bin/tflint
-RUN wget -qO- https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} | sudo tee /usr/local/bin/terragrunt > /dev/null && sudo chmod +x /usr/local/bin/terragrunt
-RUN wget -qO- https://github.com/PowerShell/PowerShell/releases/download/v${POWERSHELL_VERSION}/powershell_${POWERSHELL_VERSION}-1.deb_${TARGETARCH}.deb >> powershell.deb && sudo dpkg -i powershell.deb || sudo apt-get install -f -y && rm powershell.deb
-RUN wget -qO- https://github.com/microsoft/go-sqlcmd/releases/download/v${SQLCMD_VERSION}/sqlcmd-v${SQLCMD_VERSION}-${TARGETOS}-${TARGETARCH}.tar.bz2 | sudo tar -xj -C /usr/local/bin --exclude='*.md'
+USER root
+RUN apt-get update && apt-get install -y git wget gzip tar jq python3-pip
+RUN pip install azure-cli==${AZURE_CLI_VERSION} poetry==${POETRY_VERSION} pre-commit==${PRE_COMMIT_VERSION}
+RUN wget -qO- https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip | zcat >> /usr/local/bin/terraform && chmod +x /usr/local/bin/terraform
+RUN wget -qO- https://github.com/terraform-docs/terraform-docs/releases/download/v${TERRAFORM_DOCS_VERSION}/terraform-docs-v${TERRAFORM_DOCS_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | tar -xz -C /usr/local/bin --exclude='*.md' --exclude 'LICENSE'
+RUN wget -qO- https://github.com/aquasecurity/tfsec/releases/download/v$TFSEC_VERSION/tfsec_${TFSEC_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | tar -xz -C /usr/local/bin
+RUN wget -qO- https://github.com/terraform-linters/tflint/releases/download/v${TFLINT_VERSION}/tflint_${TARGETOS}_${TARGETARCH}.zip | zcat >> /usr/local/bin/tflint && chmod +x /usr/local/bin/tflint
+RUN wget -qO- https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} >> /usr/local/bin/terragrunt && chmod +x /usr/local/bin/terragrunt
+RUN wget -qO- https://github.com/PowerShell/PowerShell/releases/download/v${POWERSHELL_VERSION}/powershell_${POWERSHELL_VERSION}-1.deb_${TARGETARCH}.deb >> powershell.deb && dpkg -i powershell.deb || apt-get install -f -y && rm powershell.deb
+RUN wget -qO- https://github.com/microsoft/go-sqlcmd/releases/download/v${SQLCMD_VERSION}/sqlcmd-v${SQLCMD_VERSION}-${TARGETOS}-${TARGETARCH}.tar.bz2 | tar -xj -C /usr/local/bin --exclude='*.md'
