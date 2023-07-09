@@ -16,7 +16,7 @@ ARG TARGETOS
 ARG TARGETARCH
 ARG USER=dev
 USER root
-RUN apt-get update && apt-get install -y git wget gzip tar jq python3-pip
+RUN apt-get update && apt-get install -y sudp git wget gzip tar jq python3-pip
 RUN pip install azure-cli==${AZURE_CLI_VERSION} poetry==${POETRY_VERSION} pre-commit==${PRE_COMMIT_VERSION}
 RUN wget -qO- https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip | zcat >> /usr/local/bin/terraform && chmod +x /usr/local/bin/terraform
 RUN wget -qO- https://github.com/terraform-docs/terraform-docs/releases/download/v${TERRAFORM_DOCS_VERSION}/terraform-docs-v${TERRAFORM_DOCS_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | tar -xz -C /usr/local/bin --exclude='*.md' --exclude 'LICENSE'
