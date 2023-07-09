@@ -14,6 +14,7 @@ ARG SQLCMD_VERSION=1.2.0
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TARGETOS
 ARG TARGETARCH
+ARG USER=dev
 USER root
 RUN apt-get update && apt-get install -y git wget gzip tar jq python3-pip
 RUN pip install azure-cli==${AZURE_CLI_VERSION} poetry==${POETRY_VERSION} pre-commit==${PRE_COMMIT_VERSION}
@@ -24,3 +25,5 @@ RUN wget -qO- https://github.com/terraform-linters/tflint/releases/download/v${T
 RUN wget -qO- https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} >> /usr/local/bin/terragrunt && chmod +x /usr/local/bin/terragrunt
 RUN wget -qO- https://github.com/PowerShell/PowerShell/releases/download/v${POWERSHELL_VERSION}/powershell_${POWERSHELL_VERSION}-1.deb_${TARGETARCH}.deb >> powershell.deb && dpkg -i powershell.deb || apt-get install -f -y && rm powershell.deb
 RUN wget -qO- https://github.com/microsoft/go-sqlcmd/releases/download/v${SQLCMD_VERSION}/sqlcmd-v${SQLCMD_VERSION}-${TARGETOS}-${TARGETARCH}.tar.bz2 | tar -xj -C /usr/local/bin --exclude='*.md'
+RUN id ${USER} || adduser --disabled-password --gecos "" ${USER} && usermod -aG sudo ${USER} && getent group docker || groupadd docker && usermod -aG docker ${USER}
+USER $USER
