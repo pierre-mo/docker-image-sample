@@ -43,7 +43,7 @@ jobs:
         with:
           context: .
           platforms: linux/amd64
-          build-args: BASE_IMAGE=ubuntu:20.04
+          build-args: BASE_IMAGE=ubuntu:22.04
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
